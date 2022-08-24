@@ -157,6 +157,14 @@ function! s:GtagsCscope_GtagsRoot()
     endif
     return strpart(cmd_output, 0, strlen(cmd_output) - 1)
 endfunction
+function! ToggleQuickFix()
+    if empty(filter(getwininfo(), 'v:val.quickfix'))
+        copen
+    else
+        cclose
+    endif
+endfunction
+
 
 function! s:GtagsCscope()
     "
@@ -260,9 +268,9 @@ function! s:GtagsCscope()
 	:nmap <C-\><SPACE> :cs find<SPACE>
 	:nmap <C-@><SPACE> :scs find<SPACE>
 	:nmap <C-@><C-@><SPACE> :vert scs find<SPACE>
-	:nmap <F2> :copen<CR>
+	:nmap <F2> :call ToggleQuickFix()<CR>
 	:nmap <F3> :cs find d <C-R>=expand("<cword>")<CR>:<C-R>=line('.')<CR>:%<CR>
-	:nmap <F4> :cclose<CR>
+	:nmap <F4> :cc 
     endif
 endfunction
 

@@ -58,7 +58,7 @@ call vundle#begin()
 
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
-Bundle 'Valloric/YouCompleteMe'
+"Bundle 'Valloric/YouCompleteMe'
 
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -82,14 +82,14 @@ inoremap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDow
 inoremap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
 " 跳转到定义处
 "nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR>
-nnoremap <leader>a :YcmCompleter GoToDeclaration<CR>
-nnoremap <leader>s :YcmCompleter GoToDefinition<CR>
-nnoremap <leader>d :YcmCompleter GoToDefinitionElseDeclaration<CR>
+"nnoremap <leader>a :YcmCompleter GoToDeclaration<CR>
+"nnoremap <leader>s :YcmCompleter GoToDefinition<CR>
+"nnoremap <leader>d :YcmCompleter GoToDefinitionElseDeclaration<CR>
 "force recomile with syntastic
-nnoremap <F6> :YcmForceCompileAndDiagnostics<CR>
+"nnoremap <F6> :YcmForceCompileAndDiagnostics<CR>
 " nnoremap <leader>lo :lopen<CR>	"open locationlist
 " nnoremap <leader>lc :lclose<CR>	"close locationlist
-inoremap <leader><leader> <C-x><C-o>
+""inoremap <leader><leader> <C-x><C-o>
 let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 " 不显示开启vim时检查ycm_extra_conf文件的信息  
 let g:ycm_confirm_extra_conf=0
@@ -130,6 +130,10 @@ set history=100
 
 " basic settings
 set nu
+set t_u7=
+
+" use backspace to jump to tag window (left window)
+nnoremap <BS> <c-w><Left>
 
 " Enable filetype plugins
 filetype plugin on
@@ -139,7 +143,7 @@ filetype indent on
 filetype on
 
 " for taglist settings
-let Tlist_Ctags_Cmd="/usr/local/Cellar/ctags/5.8_1/bin/ctags"
+"let Tlist_Ctags_Cmd="/usr/local/Cellar/ctags/5.8_1/bin/ctags"
 let Tlist_Show_One_File = 1
 let Tlist_Exit_OnlyWindow = 1
 map <silent> <F3> :TlistToggle<cr>
@@ -159,10 +163,50 @@ set tags=tags;
 "endif
 
 " set GNU Global, gtags
+
+" uncomment it, if want to replace ctags database with cscope result, which in fact is gtags in our case
+"set cscopetag
+set cscopeprg='gtags-cscope'
+let Gtags_Auto_Map = 1
 let GtagsCscope_Auto_Load = 1
 let CtagsCscope_Auto_Map = 1
 let GtagsCscope_Quiet = 1
+let Gtags_No_Auto_Jump = 1
+let Gtags_Close_When_Single = 1
 
+" key mapping for GNU global
+"Input ",gd". It searches the string at the current cursor position from tag files.(it's like searching definition)
+nmap <Leader><Leader> : GtagsCursor <CR><CR>
+"nmap <Leader>gd :Gtags <C-R>=expand("<cword>")<CR><CR>
+"Input ",gr". It searches the referenced places of the string where the cursor is located.
+"nmap <Leader>gr :Gtags -r <C-R>=expand("<cword>")<CR><CR>
+"Input ",gs". It searches the symbols which are not defined in GTAGS.
+"nmap <Leader>gs :Gtags -s <C-R>=expand("<cword>")<CR><CR>
+"Input ",gg". It searches "pattern" from all files.(*.h, *.c, *.txt and etc)
+"nmap <Leader>gg :Gtags -go <C-R>=expand("<cword>")<CR><CR>
+"Input ",gp". It searches files.
+"nmap <Leader>gp :Gtags -Po <C-R>=expand("<cword>")<CR><CR>
+"Input ",ge". It searches "--regexp" pattern.
+"nmap <Leader>ge :Gtags -ge <C-R>=expand("<cword>")<CR><CR>
+"nmap <Leader>lr :Gtags -r 
+"nmap <Leader>ls :Gtags -s 
+"nmap <Leader>lg :Gtags -go 
+"nmap <Leader>lp :Gtags -Po 
+"nmap <Leader>le :Gtags -ge 
+" Keymap for cscope
+" These keymaps are same with above, except that the above command searches the string at the current cursor position. Meanwhile, the commands below need to enters the string to search for
+nmap <Leader>sf :cscope f f <C-R>=expand("<cword>")<CR><CR>
+nmap <Leader>st :cscope f t <C-R>=expand("<cword>")<CR><CR>
+nmap <Leader>se :cscope f e <C-R>=expand("<cword>")<CR><CR>
+nmap <Leader>sc :cscope f c <C-R>=expand("<cword>")<CR><CR>
+nmap <Leader>ss :cscope f s <C-R>=expand("<cword>")<CR><CR>
+nmap <Leader>g :cscope f g <C-R>=expand("<cword>")<CR><CR>
+
+nmap <Leader>f :cscope f f 
+nmap <Leader>t :cscope f t 
+nmap <Leader>ce :cscope f e 
+nmap <Leader>cc :cscope f c 
+nmap <Leader>cs :cscope f s 
 
 " Set to auto read when a file is changed from the outside
 set autoread
@@ -210,9 +254,15 @@ set hid
 set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
 
+" resize with keymapping
+nnoremap <c-Up>    :resize -2<CR>
+nnoremap <c-Down>  :resize +2<CR>
+nnoremap <c-Left>  :vertical resize +2<CR>
+nnoremap <c-Right> :vertical resize -2<CR>
+
 " In many terminal emulators the mouse works just fine, thus enable it.
 if has('mouse')
-  set mouse=a
+  "set mouse=a
 endif
 
 " Ignore case when searching
@@ -226,6 +276,10 @@ set hlsearch
 
 " Makes search act like search in modern browsers
 set incsearch 
+
+" set taglist search option to enable bsearch
+set tagbsearch
+set tagcase=match
 
 " Don't redraw while executing macros (good performance config)
 set lazyredraw 
@@ -463,3 +517,13 @@ endfunction
 
 " On OSX
 set clipboard=unnamed
+
+" for WSL vim clipboard
+autocmd TextYankPost * call system('win32yank.exe -i --crlf', @")
+function! Paster(mode)
+	let @" = system('win32yank.exe -o --lf')
+	return a:mode
+endfunction
+
+map <expr> p Paster('p')
+map <expr> P Paster('P')

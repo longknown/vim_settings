@@ -550,13 +550,22 @@ command! -nargs=0 GtagsUpdate call s:GtagsAutoUpdate()
 if g:Gtags_Auto_Update == 1
 	:autocmd! BufWritePost * call s:GtagsAutoUpdate()
 endif
+
+function! ToggleQuickFix()
+    if empty(filter(getwininfo(), 'v:val.quickfix'))
+        copen
+    else
+        cclose
+    endif
+endfunction
+
 " Suggested map:
 if g:Gtags_Auto_Map == 1
-	:nmap <F2> :copen<CR>
-	:nmap <F4> :cclose<CR>
+	:nmap <F2> :call ToggleQuickFix()<CR>
+	:nmap <F4> :cc 
 	:nmap <F5> :Gtags<SPACE>
 	:nmap <F6> :Gtags -f %<CR>
-	:nmap <F7> :GtagsCursor<CR>
+	:nmap <F7> :GtagsCursor<CR> 
 	:nmap <F8> :Gozilla<CR>
 	:nmap <C-n> :cn<CR>
 	:nmap <C-p> :cp<CR>
